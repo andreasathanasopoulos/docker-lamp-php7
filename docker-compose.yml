@@ -1,0 +1,32 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+    ports:
+      - 80:80
+    volumes:
+      - ./www:/var/www/html
+    links:
+      - 'database'
+  database:
+    image: mariadb:10.1
+    restart: always
+    volumes:
+      - database:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "test"
+      MYSQL_PASSWORD: "test1234"
+      MYSQL_DATABASE: "test_db"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - database
+    ports:
+      - 8181:80
+    environment:
+      PMA_HOST: database
+volumes:
+  database:
